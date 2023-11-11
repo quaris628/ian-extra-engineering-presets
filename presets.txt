@@ -1,0 +1,33 @@
+; This is a comment.
+
+; Format for each preset:
+; It must be 9 consecutive lines.
+; Line 1 = the keybind. e.g. Q or 1.
+;   Any autohotkey keybind will work (e.g. ^Q for Ctrl+Q).
+;   Each keybind is assumed to be unique.
+; Lines 2-9 = the power followed by the coolant
+;   Power must be an integer between 0 and 300 (inclusive).
+;   Coolant must be an integer between 0 and 8 (inclusive).
+;   Power and coolant should be separated by one tab character.
+
+; Sensor boost
+E
+0	0 ; beams
+75	0 ; torpedos
+248	8 ; sensors
+100	0 ; maneuver
+100	0 ; impulse
+100	0 ; warp
+11	0 ; front shields
+11	0 ; rear shields
+
+; Warp boost
+R
+75	0
+75	0
+100	0
+100	0
+75	0
+248	8
+11	0
+11	0
