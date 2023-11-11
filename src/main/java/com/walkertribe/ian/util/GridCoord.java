@@ -1,5 +1,6 @@
 package com.walkertribe.ian.util;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.Iterator;
 
 /**
@@ -60,6 +61,11 @@ public final class GridCoord implements Comparable<GridCoord> {
             @Override
             public GridCoord next() {
                 return COORDS[i++];
+            }
+
+            @Override
+            public void remove() {
+
             }
         };
     }
