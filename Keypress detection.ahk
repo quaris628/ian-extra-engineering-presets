@@ -4,7 +4,13 @@
 
 SendMode "Input"
 
-ianWinTitle := "Command Prompt ahk_class ConsoleWindowClass"
+; ----------------------------------------------------------------
+; Startup Stuff
+; ----------------------------------------------------------------
+
+; open IAN
+
+Run A_ComSpec " /c java -jar ian.jar",,,&ianPid
 
 ; load from file what keybinds are being used for presets
 
@@ -32,9 +38,12 @@ while (i < presetFileLines.Length) {
 }
 #HotIf
 
+; ----------------------------------------------------------------
+; Applies a preset by typing its key into IAN's command line
+; ----------------------------------------------------------------
 applyPreset(key) {
-	ControlSendText(key, , ianWinTitle)
-	ControlSend("{Enter}", , ianWinTitle)
+	ControlSendText(key, , "ahk_pid " ianPid)
+	ControlSend("{Enter}", , "ahk_pid " ianPid)
 }
 
 ; ----------------------------------------------------------------
@@ -43,18 +52,25 @@ applyPreset(key) {
 ; Otherwise, returns true.
 ; ----------------------------------------------------------------
 isOkToInterceptKeypress() {
-	return WinExist(ianWinTitle) && checkIfFocusedOnEngWin() > 0
+	return WinExist("ahk_pid " ianPid) && checkIfFocusedOnEngWin() > 0
 }
 
 ; ----------------------------------------------------------------
 ; Checks if an engineering artemis window currently has focus.
-; If it's found, returns its ahk_id, otherwise returns -1.
+; Returns: ahk_id if the window is found, otherwise returns -1.
 ; ----------------------------------------------------------------
 checkIfFocusedOnEngWin() {
 	artemisWinAhkId := WinActive("Game Window")
 	if (artemisWinAhkId <= 0) {
 		return -1
 	}
+	
+	; This will fail if, for some reason, the engineering console tab
+	; is off-screen enough such that the first E is not visible.
+	; I don't know how this could happen though, or if it even can:
+	; Engineering must be one of the first 4 consoles, and the smallest
+	; window size offered by Artemis (800x600) can just barely fit the
+	; tabs for 4 consoles.
 	
 	selectedConsolePos := findSelectedConsole1thru4(artemisWinAhkId)
 	;MsgBox("selectedConsolePos=" selectedConsolePos)
