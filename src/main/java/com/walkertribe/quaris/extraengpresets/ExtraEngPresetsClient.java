@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
+public class ExtraEngPresetsClient {
 
     private static final String CONFIG_FILEPATH = "config.ini";
     private static final String SERVER_ADDRESS_INI_FIELD = "serverAddress=";
@@ -33,8 +33,9 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
         try {
             iniSc = new Scanner(new File(CONFIG_FILEPATH));
         } catch (FileNotFoundException e) {
-            System.out.println("Could not open presets file for editing:");
+            System.out.println("Could not open " + CONFIG_FILEPATH + " file for editing:");
             e.printStackTrace();
+            new Scanner(System.in).nextLine();
             return;
         }
 
@@ -50,7 +51,9 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
                 String shipNumStr = line.substring(line.indexOf("=") + 1);
                 shipIndex = (byte)(Byte.parseByte(shipNumStr) - 1);
                 if (!(0 <= shipIndex && shipIndex <= 7)) {
-                    throw new IllegalArgumentException("ship number must be between 1 and 8 (inclusive)");
+                    System.out.println("Ship number must be between 1 and 8 (inclusive). It was: " + shipNumStr);
+                    new Scanner(System.in).nextLine();
+                    return;
                 }
             } else if (line.startsWith(PRESET_FILEPATH_INI_FIELD)) {
                 presetsFilePath = line.substring(line.indexOf("=") + 1);
@@ -60,7 +63,9 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
         // Check if presets filepath is valid
         File presetsFile = new File(presetsFilePath);
         if (presetsFile.isDirectory()) {
-            throw new IllegalArgumentException("presetsFilePath must point to a file, not a directory");
+            System.out.println("presetsFilePath must point to a file, not a directory. It was: " + presetsFilePath);
+            new Scanner(System.in).nextLine();
+            return;
         }
         if (!presetsFile.isFile()) {
             System.out.println("This file does not exist:" + presetsFile.getAbsolutePath()
@@ -71,29 +76,36 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
             }
             try {
                 if (!presetsFile.createNewFile()) {
-                    System.out.println("Could not create presets file; reason unknown");
+                    System.out.println("ERROR: Could not create presets file. Reason unknown.");
+                    System.out.println("Perhaps try creating it yourself?");
+                    new Scanner(System.in).nextLine();
                     return;
                 }
             } catch (IOException e) {
                 System.out.println("Could not create presets file:");
                 e.printStackTrace();
+                new Scanner(System.in).nextLine();
                 return;
             }
             try {
                 new ProcessBuilder("Notepad.exe", presetsFile.getAbsolutePath()).start();
             } catch (IOException e) {
                 System.out.println("Could not open presets file for editing:");
+                new Scanner(System.in).nextLine();
                 e.printStackTrace();
+                return;
             }
             return;
         }
 
         // Start the client
-        ExtraEngPresetsClient client = null;
+        ExtraEngPresetsClient client;
         try {
             client = new ExtraEngPresetsClient(serverAddress, shipIndex, presetsFilePath);
         } catch (IOException ex) {
+            System.out.println("Could not read from presets file:");
             ex.printStackTrace();
+            new Scanner(System.in).nextLine();
             return;
         }
 
@@ -105,7 +117,6 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
     private ExtraPresetsReader presetsReader;
 	
     public ExtraEngPresetsClient(String host, byte shipIndex, String presetsFilePath) throws IOException {
-        super(shipIndex);
 
         presetsReader = new ExtraPresetsReader(presetsFilePath);
         System.out.println("Preset documents successfully obtained from " + presetsFilePath);
@@ -154,10 +165,5 @@ public class ExtraEngPresetsClient extends PlayerShipUpdateListener {
             server.send(new EngSetEnergyPacket(sys, setting.getPowerDec()));
             server.send(new EngSetCoolantPacket(sys, setting.getCoolant()));
         }
-    }
-
-    @Override
-    public void onShipUpdate(ArtemisPlayer player) {
-        // not needed
     }
 }
