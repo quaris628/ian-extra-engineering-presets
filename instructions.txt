@@ -1,0 +1,55 @@
+----------------------------------------------------------------
+           Instructions for Extra Engineering Presets           
+----------------------------------------------------------------
+
+ABOUT:
+ This tool allows you to have more than 10 engineering presets.
+ 
+ This consists of two programs:
+ 1) An autohotkey script that detects your keypresses and
+    relays them to the second program
+ 2) A java program that receives info about keypresses and
+    talks to the Artemis server to set your ship's power and
+    coolant
+ 
+ You'll need java runtime (version 8) installed.
+
+
+TO CONFIGURE PRESETS:
+ Edit presets.txt.
+ You can change which preset file is loaded in config.ini.
+
+TO START:
+ 1. Open config.ini
+ 2. Set serverAddress to the IP address of the artemis server
+ 3. Set shipNumber to which ship to board (1 through 8)
+ 4. Save config.ini
+ 5. Ensure your Artemis server is up and running
+ 5. Run "Keypress detection.exe"
+ 6. A console window should open and a green H icon should
+    appear in your tray.
+    (The console window is the java program that connects to
+    the Artemis server.)
+    (The green H tray icon is the autohotkey script that
+    detects keypresses.
+ 7. Look at the console window and verify that it has connected
+    to the server and has boarded your intended ship number.
+ 8. Play Artemis!
+    Your keystrokes should only trigger the presets when you
+    have focus on an artemis window with engineering open.
+
+TO RESTART:
+ 1. Close the command line window
+ 2. Run "Keypress detection.exe" again
+
+TO CLOSE:
+ 1. Close the command line window
+ 2. Right-click the green-H tray icon, and select Exit
+
+
+If you have questions, ask Quaris.
+
+Massive credit to the Interface for Artemis Networking (IAN)
+project and everyone who has reverse-engineered Artemis's
+network packets structure. Without this prior work this tool
+would not be possible.
