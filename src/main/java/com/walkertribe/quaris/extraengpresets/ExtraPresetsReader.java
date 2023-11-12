@@ -60,8 +60,8 @@ public class ExtraPresetsReader
                     + "' between power and coolant here: "
                     + line);
         }
-        int power = Integer.parseInt(line.substring(0, delimPos));
-        int coolant = Integer.parseInt(line.substring(delimPos + 1));
+        int power = Integer.parseInt(line.substring(0, delimPos).trim());
+        int coolant = Integer.parseInt(line.substring(delimPos + 1).trim());
         return new int[] { power, coolant };
     }
 

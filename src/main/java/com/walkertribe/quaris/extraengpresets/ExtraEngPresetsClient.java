@@ -117,7 +117,7 @@ public class ExtraEngPresetsClient {
     private ExtraPresetsReader presetsReader;
 	
     public ExtraEngPresetsClient(String host, byte shipIndex, String presetsFilePath) throws IOException {
-
+        System.out.println("Reading preset documents...");
         presetsReader = new ExtraPresetsReader(presetsFilePath);
         System.out.println("Preset documents successfully obtained from " + presetsFilePath);
 
