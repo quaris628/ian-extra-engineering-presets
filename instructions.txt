@@ -25,7 +25,7 @@ TO START:
  3. Set shipNumber to which ship to board (1 through 8)
  4. Save config.ini
  5. Ensure your Artemis server is up and running
- 5. Run "Keypress detection.exe"
+ 5. Run "ExtraEngineeringPresets.exe"
  6. A console window should open and a green H icon should
     appear in your tray.
     (The console window is the java program that connects to
