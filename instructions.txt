@@ -12,12 +12,12 @@ ABOUT:
     talks to the Artemis server to set your ship's power and
     coolant
  
- You'll need java runtime (version 8) installed.
+ You'll need java runtime (at least version 8) installed.
 
 
 TO CONFIGURE PRESETS:
  Edit presets.txt.
- You can change which preset file is loaded in config.ini.
+ You can change which file is used for presets in config.ini.
 
 TO START:
  1. Open config.ini
@@ -25,26 +25,29 @@ TO START:
  3. Set shipNumber to which ship to board (1 through 8)
  4. Save config.ini
  5. Ensure your Artemis server is up and running
- 5. Run "ExtraEngineeringPresets.exe"
- 6. A console window should open and a green H icon should
+ 6. Run "ExtraEngineeringPresets.exe"
+ 7. A console window should open and a green H icon should
     appear in your tray.
     (The console window is the java program that connects to
     the Artemis server.)
     (The green H tray icon is the autohotkey script that
     detects keypresses.
- 7. Look at the console window and verify that it has connected
+ 8. Look at the console window and verify that it has connected
     to the server and has boarded your intended ship number.
- 8. Play Artemis!
+ 9. Play Artemis!
     Your keystrokes should only trigger the presets when you
     have focus on an artemis window with engineering open.
+    If the server crashes, you'll have to restart.
 
 TO RESTART:
  1. Close the command line window
- 2. Run "Keypress detection.exe" again
+ 2. Run "ExtraEngineeringPresets.exe" again
 
 TO CLOSE:
  1. Close the command line window
- 2. Right-click the green-H tray icon, and select Exit
+ 2. Press any preset keybind
+    OR Hit Ctrl+Esc
+    OR Right-click the green-H tray icon, and select Exit
 
 
 If you have questions, ask Quaris.
