@@ -10,6 +10,16 @@
 ;   Coolant must be an integer between 0 and 8 (inclusive).
 ;   Power and coolant should be separated by one tab character.
 
+; Note that these extra presets have a very slightly
+; longer delay between when you hit your key and when
+; the game server updates the power and coolant levels
+; compared to the 10 true presets.
+; If those fractions of a second in applying your presets
+; matter to you (which they do for me sometimes), I recommend
+; using the 10 true presets for all your combat presets
+; and use your extra presets for things that can wait
+; like idling or scouting.
+
 ; Sensor boost
 E
 0	0 ; beams
