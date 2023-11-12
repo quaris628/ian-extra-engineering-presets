@@ -12,6 +12,21 @@ SendMode "Input"
 
 Run A_ComSpec " /c java -jar ian.jar",,,&ianPid
 
+; if running EF, colors are different
+
+isEasternFront := IniRead("config.ini", "Misc", "isEasternFront", "0")
+
+if (isEasternFront) {
+	BULB_RED_CUTOFF := -1
+BULB_GREEN_CUTOFF := -1
+	BULB_BLUE_CUTOFF := 64
+} else {
+	BULB_RED_CUTOFF := 64
+	BULB_GREEN_CUTOFF := 161
+	BULB_BLUE_CUTOFF := -1
+
+}
+
 ; load from file what keybinds are being used for presets
 
 presetFilePath := IniRead("config.ini", "Presets", "presetFile", "presets.txt")
@@ -52,7 +67,10 @@ applyPreset(key) {
 ; Otherwise, returns true.
 ; ----------------------------------------------------------------
 isOkToInterceptKeypress() {
-	return WinExist("ahk_pid " ianPid) && checkIfFocusedOnEngWin() > 0
+	if (!WinExist("ahk_pid " ianPid)) {
+		ExitApp
+	}
+	return checkIfFocusedOnEngWin() > 0
 }
 
 ; ----------------------------------------------------------------
@@ -117,15 +135,15 @@ isBulbOn(consolePos) {
 	; stolen from https://www.autohotkey.com/board/topic/38968-hex-to-rgb/
 	red := colorHex >> 16 & 0xFF
 	green := colorHex >> 8 & 0xFF
+	blue := colorHex & 0xFF
 	
 	;MsgBox("Bulb " consolePos " (" getConsoleBulbX(consolePos) "," 13 "): R " red " G " green)
 	
-	; blue cutoff is very close, 214 vs 224
-	; so I won't rely on it / check for it
-	
-	if (red < 64) {
+	if (red < BULB_RED_CUTOFF) {
 		return False
-	} else if (green < 161) {
+	} else if (green < BULB_GREEN_CUTOFF) {
+		return False
+	} else if (blue < BULB_BLUE_CUTOFF) {
 		return False
 	} else {
 		return True
