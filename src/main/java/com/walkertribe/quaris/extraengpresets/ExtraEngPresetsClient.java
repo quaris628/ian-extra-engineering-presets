@@ -2,6 +2,7 @@ package com.walkertribe.quaris.extraengpresets;
 
 import com.walkertribe.ian.enums.ShipSystem;
 import com.walkertribe.ian.iface.*;
+import com.walkertribe.ian.protocol.core.eng.EngResetCoolantPacket;
 import com.walkertribe.ian.protocol.core.eng.EngSetCoolantPacket;
 import com.walkertribe.ian.protocol.core.eng.EngSetEnergyPacket;
 import com.walkertribe.ian.protocol.core.setup.SetShipPacket;
@@ -145,8 +146,6 @@ public class ExtraEngPresetsClient {
         while (!inputLine.equals(CONSOLE_QUIT_MSG)) {
             EngSysSetting[] preset = presetsReader.getPreset(inputLine);
             if (preset != null) {
-                // send it twice in case packets are lost
-                applyPreset(preset);
                 applyPreset(preset);
             } else {
                 System.out.println("There's no preset with key: " + inputLine);
@@ -159,11 +158,14 @@ public class ExtraEngPresetsClient {
         if (preset.length != 8) {
             throw new IllegalArgumentException("preset must be for all 8 systems. Length was " + preset.length);
         }
+        server.send(new EngResetCoolantPacket());
         for (int i = 0; i < ShipSystem.values().length; i++) {
             ShipSystem sys = ShipSystem.values()[i];
             EngSysSetting setting = preset[i];
             server.send(new EngSetEnergyPacket(sys, setting.getPowerDec()));
-            server.send(new EngSetCoolantPacket(sys, setting.getCoolant()));
+            if (setting.getCoolant() > 0) {
+                server.send(new EngSetCoolantPacket(sys, setting.getCoolant()));
+            }
         }
     }
 }
