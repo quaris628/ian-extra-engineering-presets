@@ -98,6 +98,7 @@ public class ExtraEngPresetsConfig {
                     new ProcessBuilder("Notepad.exe", file.getAbsolutePath()).start();
                     System.out.println("Opened file for editing in Notepad");
                 }
+                throw new FileNotReadyException();
             }
             throw new FileNotFoundException("This file does not exist: " + file.getAbsolutePath());
         }

@@ -19,6 +19,8 @@ public class ExtraEngPresetsClient {
         ExtraEngPresetsConfig config;
         try {
             config = new ExtraEngPresetsConfig();
+        } catch (FileNotReadyException e) {
+            return;
         } catch (FileNotFoundException e) {
             System.out.println("File not found error");
             System.out.println(e.getMessage());
@@ -45,6 +47,11 @@ public class ExtraEngPresetsClient {
                 connectionSucceeded = false;
             } catch (ConnectException e) {
                 System.out.println("Connection failed, retrying.");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
             } catch (IOException e) {
                 System.out.println(e.getMessage());
                 e.printStackTrace();

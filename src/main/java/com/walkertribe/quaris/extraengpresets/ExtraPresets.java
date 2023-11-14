@@ -54,6 +54,7 @@ public class ExtraPresets
                     lowPowerSettings.add(setting);
                 }
             }
+
             // sort systems settings by power level
             Arrays.sort(settings, Comparator.comparingInt(EngSysSetting::getPower0to300));
 

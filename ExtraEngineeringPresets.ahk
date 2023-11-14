@@ -30,7 +30,13 @@ BULB_GREEN_CUTOFF := -1
 ; load from file what keybinds are being used for presets
 
 presetFilePath := IniRead("config.ini", "Presets", "presetFile", "presets.txt")
-presetFileLines := StrSplit(FileRead(presetFilePath), "`n")
+
+try
+	presetFileLines := StrSplit(FileRead(presetFilePath), "`n")
+catch OSError as err
+	; console window will ask user if they want to generate
+	; and edit the file; AHK doesn't need to do anything.
+	ExitApp
 
 #HotIf isOkToInterceptKeypress()
 HotIf 'isOkToInterceptKeypress()'
