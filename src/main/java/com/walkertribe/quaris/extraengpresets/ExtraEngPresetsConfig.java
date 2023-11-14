@@ -182,9 +182,13 @@ public class ExtraEngPresetsConfig {
                 "; \n" +
                 "; Line 1 = the keybind. e.g. \"1\" or \"Q\"\n" +
                 ";   Each keybind is assumed to be unique.\n" +
-                ";   You can specify Shift and Ctrl modifiers by adding \"^\"\n" +
-                ";     and \"+\" prefixes respectively. e.g. \"+Q\" is Shift+Q\n" +
-                ";   More advanced keybinds are possible; any autohotkey (v2)\n" +
+                ";   You can specify modifiers by adding prefixes.\n" +
+                ";     Shift = +\n" +
+                ";     Ctrl = ^\n" +
+                ";     Alt = !\n" +
+                ";     Win = #\n" +
+                ";     For example, \"+Q\" is Shift+Q\n" +
+                ";   More advanced keybinds are possible. Any autohotkey (v2)\n" +
                 ";     keybind will work. Full documentation:\n" +
                 ";     https://www.autohotkey.com/docs/v2/Hotkeys.htm\n" +
                 ";\n" +

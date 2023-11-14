@@ -18,9 +18,13 @@
 ; 
 ; Line 1 = the keybind. e.g. "1" or "Q"
 ;   Each keybind is assumed to be unique.
-;   You can specify Shift and Ctrl modifiers by adding "^"
-;     and "+" prefixes respectively. e.g. "+Q" is Shift+Q
-;   More advanced keybinds are possible; any autohotkey (v2)
+;   You can specify modifiers by adding prefixes.
+;     Shift = +
+;     Ctrl = ^
+;     Alt = !
+;     Win = #
+;     For example, "+Q" is Shift+Q
+;   More advanced keybinds are possible. Any autohotkey (v2)
 ;     keybind will work. Full documentation:
 ;     https://www.autohotkey.com/docs/v2/Hotkeys.htm
 ;
