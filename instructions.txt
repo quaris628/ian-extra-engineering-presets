@@ -4,15 +4,19 @@
 
 ABOUT:
  This tool allows you to have more than 10 engineering presets.
- 
- This consists of two programs:
- 1) An autohotkey script that detects your keypresses and
-    relays them to the second program
- 2) A java program that receives info about keypresses and
-    talks to the Artemis server to set your ship's power and
-    coolant
- 
- You'll need java runtime (at least version 8) installed.
+ It uses autohotkey to detect keypresses, and sets power
+ and coolant levels via an independent network connection
+ to the game server.
+
+ The keybinds will only trigger when you have an artemis
+ window focused and have the engineering console active!
+ For example, if you keep engineering claimed while you go on
+ a shuttle expedition, your presets won't trigger from your
+ keypresses you're using to pilot the shuttle.
+ https://clips.twitch.tv/SassySpicyHeronItsBoshyTime-Rx3bdHeN_Vef3Vzp
+
+ You'll need java runtime installed.
+ (At least version 8, I think. I'm not entirely sure.)
 
 
 TO CONFIGURE PRESETS:
@@ -20,37 +24,29 @@ TO CONFIGURE PRESETS:
  You can change which file is used for presets in config.ini.
 
 TO START:
- 1. Open config.ini
- 2. Set serverAddress to the IP address of the artemis server
- 3. Set shipNumber to which ship to board (1 through 8)
- 4. Save config.ini
- 5. Ensure your Artemis server is up and running
- 6. Run "ExtraEngineeringPresets.exe"
- 7. A console window should open and a green H icon should
-    appear in your tray.
-    (The console window is the java program that connects to
-    the Artemis server.)
-    (The green H tray icon is the autohotkey script that
-    detects keypresses.
- 8. Look at the console window and verify that it has connected
-    to the server and has boarded your intended ship number.
- 9. Play Artemis!
-    Your keystrokes should only trigger the presets when you
-    have focus on an artemis window with engineering open.
-    If the server crashes, you'll have to restart.
+ 1. Ensure your settings (like server IP address)
+    are set in config.ini
+ 2. Run "ExtraEngineeringPresets.exe".
+ A console window should open, and a green H icon should
+ appear in your system tray.
+ Look at the console window and verify that it has connected
+ to the server and has boarded your intended ship number.
+
+ If the server crashes, you'll have to restart this tool.
 
 TO RESTART:
  1. Close the command line window
  2. Run "ExtraEngineeringPresets.exe" again
 
-TO CLOSE:
+TO STOP:
  1. Close the command line window
  2. Press any preset keybind
     OR Hit Ctrl+Esc
     OR Right-click the green-H tray icon, and select Exit
 
 
-If you have questions, ask Quaris.
+If you have questions, find bugs, etc, go to Quaris.
+
 
 Massive credit to the Interface for Artemis Networking (IAN)
 project and everyone who has reverse-engineered Artemis's
