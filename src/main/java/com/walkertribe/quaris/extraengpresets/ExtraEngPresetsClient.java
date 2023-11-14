@@ -81,18 +81,40 @@ public class ExtraEngPresetsClient {
         while (true) {
             // be mindful of keeping input delay low here
             String inputLine = sc.nextLine();
-            applyPreset(config.getPresets().getPreset(inputLine));
+            applyPreset(inputLine);
         }
     }
 
-    public void applyPreset(EngSysSetting[] preset) {
+    public void applyPreset(String key) {
         // be mindful of keeping input delay low here
+        EngSysSetting[] highPowerSystems = config.getPresets().getPresetHighPowerSystems(key);
+        EngSysSetting[] lowPowerSystems = config.getPresets().getPresetLowPowerSystems(key);
+
+        // send high-power packets first
+        for (EngSysSetting setting : highPowerSystems) {
+            setPower(setting);
+        }
+        // send high-power systems' coolant packets second
         server.send(new EngResetCoolantPacket());
-        for (EngSysSetting setting : preset) {
-            server.send(new EngSetEnergyPacket(setting.getSystem(), setting.getPower0to1()));
-            if (setting.getCoolant() > 0) {
-                server.send(new EngSetCoolantPacket(setting.getSystem(), setting.getCoolant()));
-            }
+        for (EngSysSetting setting : highPowerSystems) {
+            setCoolant(setting);
+        }
+        // send all other power and coolant packets last
+        for (EngSysSetting setting : lowPowerSystems) {
+            setPower(setting);
+        }
+        for (EngSysSetting setting : lowPowerSystems) {
+            setCoolant(setting);
+        }
+    }
+
+    private void setPower(EngSysSetting setting) {
+        server.send(new EngSetEnergyPacket(setting.getSystem(), setting.getPower0to1()));
+    }
+
+    private void setCoolant(EngSysSetting setting) {
+        if (setting.getCoolant() > 0) {
+            server.send(new EngSetCoolantPacket(setting.getSystem(), setting.getCoolant()));
         }
     }
 
