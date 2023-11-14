@@ -1,24 +1,34 @@
-; This is a comment.
+; Notes:
+;
+; Be mindful of overlaps with your other engineering keybinds.
+; ESPECIALLY be mindful of your presets for storing keybinds.
+; It's an easy mistake to add extra presets for Shift+1, etc.
+; and not change your keybinds for storing presets.
+; (To change your Artemis keybinds, edit controls.ini.)
+;
+; These extra presets have a slightly longer input delay
+; compared to the 10 true presets. I haven't quantified the
+; difference, but I recommend using the true presets for
+; panic and/or combat settings that need to be fast.
 
-; Format for each preset:
-; It must be 9 consecutive lines.
-; Line 1 = the keybind. e.g. Q or 1.
-;   Any autohotkey keybind will work (e.g. ^Q for Ctrl+Q).
+
+; File Format:
+; 
+; Each preset must be 9 consecutive lines.
+; 
+; Line 1 = the keybind. e.g. "1" or "Q"
 ;   Each keybind is assumed to be unique.
-; Lines 2-9 = the power followed by the coolant
+;   You can specify Shift and Ctrl modifiers by adding "^"
+;     and "+" prefixes respectively. e.g. "+Q" is Shift+Q
+;   More advanced keybinds are possible; any autohotkey (v2)
+;     keybind will work. Full documentation:
+;     https://www.autohotkey.com/docs/v2/Hotkeys.htm
+;
+; Lines 2-9 = the power, followed by the coolant
 ;   Power must be an integer between 0 and 300 (inclusive).
 ;   Coolant must be an integer between 0 and 8 (inclusive).
 ;   Power and coolant should be separated by one tab character.
 
-; Note that these extra presets have a very slightly
-; longer delay between when you hit your key and when
-; the game server updates the power and coolant levels
-; compared to the 10 true presets.
-; If those fractions of a second in applying your presets
-; matter to you (which they do for me sometimes), I recommend
-; using the 10 true presets for all your combat presets
-; and use your extra presets for things that can wait
-; like idling or scouting.
 
 ; Sensor boost
 E

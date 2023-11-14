@@ -3,20 +3,31 @@ package com.walkertribe.quaris.extraengpresets;
 import com.walkertribe.ian.enums.ShipSystem;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ExtraPresetsReader
+/**
+ * Stores a map of keybinds to engineering presets.
+ */
+public class ExtraPresets
 {
     private static final char COMMENT_CHAR = ';';
     private static final char POWER_COOLANT_DELIMITER = '\t';
 
     private HashMap<String, EngSysSetting[]> presets;
 
-    public ExtraPresetsReader(String filepath) throws IOException {
+    /**
+     * Creates extra presets object by loading keybinds and settings from a file
+     * @param file presets file to load
+     * @throws FileNotFoundException if the file isn't found
+     * @throws IOException if there's problems parsing the power and coolant
+     */
+    public ExtraPresets(File file) throws IOException, FileNotFoundException {
         presets = new HashMap<String, EngSysSetting[]>();
 
-        Scanner sc = new Scanner(new File(filepath));
+        Scanner sc = new Scanner(file);
         String line;
         // loop through each preset
         while (sc.hasNextLine()) {
@@ -24,35 +35,45 @@ public class ExtraPresetsReader
             if (line.length() == 0) {
                 continue;
             }
+            // read preset's key
             String key = line;
+            // read preset's system settings
             EngSysSetting[] settings = new EngSysSetting[ShipSystem.values().length];
-            // loop through each system in the preset
-            for (int i = 0; i < ShipSystem.values().length; i++) {
+            for (ShipSystem sys : ShipSystem.values()) {
                 int[] powerAndCoolant = parsePowerAndCoolant(sc.nextLine());
-                settings[i] = new EngSysSetting(powerAndCoolant[0], powerAndCoolant[1]);
+                settings[sys.ordinal()] = new EngSysSetting(sys, powerAndCoolant[0], powerAndCoolant[1]);
             }
+            // sort systems settings by power level, so that the
+            // higher-power packets are the ones that are sent first
+            Arrays.sort(settings, Comparator.comparingInt(EngSysSetting::getPower0to300));
+
             presets.put(key, settings);
         }
     }
 
     /**
-     * Gets a preset for a given key
+     * Gets a preset for a given key.
+     * Returned preset array indices are the ordinals of the ShipSystem enum.
      * @param key a unique string that identifies this preset
-     *            (usually a single character corresponding with the preset's keybind)
-     * @return presets for the key, or null if the key doesn't have a preset
+     *   (this is currently always the preset's autohotkey keybind, but it doesn't have to be)
+     * @return presets for the key, or DEFAULT_PRESET if the key doesn't have a preset
      */
     public EngSysSetting[] getPreset(String key) {
-        return presets.getOrDefault(key, null);
+        // be mindful of keeping input delay low here
+        return presets.get(key);
     }
 
     /**
      * Parses power and coolant from a line in the presets file
-     * @param line
+     * @param line single line in the presets file
      * @return int[] { power, coolant }
-     * @throws IOException
+     * @throws IOException if there's problems parsing the integers
      */
     private static int[] parsePowerAndCoolant(String line) throws IOException {
         line = trimComment(line);
+        if (trimWhitespace(line).length() == 0) {
+            throw new IOException("Blank power and coolant line");
+        }
         int delimPos = line.indexOf(POWER_COOLANT_DELIMITER);
         if (delimPos <= 0) {
             throw new IOException("Expected delimiter '"
