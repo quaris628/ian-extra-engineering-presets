@@ -8,14 +8,12 @@ SendMode "Input"
 ; Startup Stuff
 ; ----------------------------------------------------------------
 
-; open IAN
-
 Run A_ComSpec " /c java -jar ian.jar",,,&ianPid
 
-; if running EF, colors are different
-
 isEasternFront := IniRead("config.ini", "Misc", "isEasternFront", "0")
+presetFilePath := IniRead("config.ini", "Presets", "presetFile", "presets.txt")
 
+; EF uses different reddish colors
 if (isEasternFront) {
 	BULB_RED_CUTOFF := -1
 BULB_GREEN_CUTOFF := -1
@@ -24,20 +22,15 @@ BULB_GREEN_CUTOFF := -1
 	BULB_RED_CUTOFF := 64
 	BULB_GREEN_CUTOFF := 161
 	BULB_BLUE_CUTOFF := -1
-
 }
 
 ; load from file what keybinds are being used for presets
-
-presetFilePath := IniRead("config.ini", "Presets", "presetFile", "presets.txt")
-
 try
 	presetFileLines := StrSplit(FileRead(presetFilePath), "`n")
 catch OSError as err
 	; console window will ask user if they want to generate
 	; and edit the file; AHK doesn't need to do anything.
 	ExitApp
-
 #HotIf isOkToInterceptKeypress()
 HotIf 'isOkToInterceptKeypress()'
 i := 1
