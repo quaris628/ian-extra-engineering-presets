@@ -30,8 +30,10 @@ public class ExtraPresets
 
         Scanner sc = new Scanner(file);
         String line;
+        int lineNum = -1;
         // loop through each preset
         while (sc.hasNextLine()) {
+            lineNum++;
             line = trimWhitespace(trimComment(sc.nextLine()));
             if (line.length() == 0) {
                 continue;
@@ -43,7 +45,8 @@ public class ExtraPresets
             LinkedList<EngSysSetting> highPowerSettings = new LinkedList<EngSysSetting>();
             LinkedList<EngSysSetting> lowPowerSettings = new LinkedList<EngSysSetting>();
             for (ShipSystem sys : ShipSystem.values()) {
-                int[] powerAndCoolant = parsePowerAndCoolant(sc.nextLine());
+                lineNum++;
+                int[] powerAndCoolant = parsePowerAndCoolant(sc.nextLine(), lineNum);
                 int power = powerAndCoolant[0];
                 int coolant = powerAndCoolant[1];
                 EngSysSetting setting = new EngSysSetting(sys, power, coolant);
@@ -103,20 +106,42 @@ public class ExtraPresets
      * @return int[] { power, coolant }
      * @throws IOException if there's problems parsing the integers
      */
-    private static int[] parsePowerAndCoolant(String line) throws IOException {
+    private static int[] parsePowerAndCoolant(String line, int lineNum) throws IOException {
         line = trimComment(line);
         if (trimWhitespace(line).length() == 0) {
-            throw new IOException("Blank power and coolant line");
+            throw new IOException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nLine is blank, expected power and coolant");
         }
+
         int delimPos = line.indexOf(POWER_COOLANT_DELIMITER);
         if (delimPos <= 0) {
-            throw new IOException("Expected delimiter '"
-                    + POWER_COOLANT_DELIMITER
-                    + "' between power and coolant here: "
-                    + line);
+            throw new IOException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nExpected delimiter '" + POWER_COOLANT_DELIMITER
+                    + "' separating power and coolant");
         }
-        int power = Integer.parseInt(line.substring(0, delimPos).trim());
-        int coolant = Integer.parseInt(line.substring(delimPos + 1).trim());
+
+        int power, coolant;
+        try {
+            power = Integer.parseInt(line.substring(0, delimPos).trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nPower is not a number");
+        }
+        try {
+            coolant = Integer.parseInt(line.substring(delimPos + 1).trim());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nCoolant is not a number");
+        }
+        if (!(0 <= power && power <= 300)) {
+            throw new NumberFormatException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nPower must be between 0 and 300");
+        }
+        if (!(0 <= coolant && coolant <= 8)) {
+            throw new NumberFormatException("Error parsing power and coolant at line number " + lineNum
+                    + ": '" + line + "'\nCoolant must be between 0 and 8");
+        }
+
         return new int[] { power, coolant };
     }
 
@@ -141,7 +166,7 @@ public class ExtraPresets
         //  ([Ljava.lang.Object; is in module java.base of loader 'bootstrap';
         //  [Lcom.walkertribe.quaris.extraengpresets.EngSysSetting;
         //  is in unnamed module of loader 'app')
-        // so this manualToArray is a workaround
+        // so this manualToArray function is a workaround
         EngSysSetting[] settingsArr = new EngSysSetting[settings.size()];
         int i = 0;
         for (EngSysSetting setting: settings) {

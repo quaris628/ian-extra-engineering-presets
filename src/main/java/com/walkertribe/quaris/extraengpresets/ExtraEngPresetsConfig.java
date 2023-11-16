@@ -43,16 +43,18 @@ public class ExtraEngPresetsConfig {
         this.shipIndex = DEFAULT_SHIP_INDEX;
         String presetsFilePath = DEFAULT_PRESETS_FILEPATH;
 
+        int lineNum = -1;
         while (iniSc.hasNextLine()) {
             String line = iniSc.nextLine();
+            lineNum++;
 
             if (line.startsWith(SERVER_ADDRESS_INI_FIELD)) {
                 String fullServerAddressStr = line.substring(line.indexOf("=") + 1);
                 this.serverIpAddress = parseServerIpAddress(fullServerAddressStr);
-                this.serverPort = parseServerPort(fullServerAddressStr);
+                this.serverPort = parseServerPort(fullServerAddressStr, lineNum);
             } else if (line.startsWith(SHIP_NUM_INI_FIELD)) {
                 String shipNumStr = line.substring(line.indexOf("=") + 1);
-                this.shipIndex = parseShipIndex(shipNumStr);
+                this.shipIndex = parseShipIndex(shipNumStr, lineNum);
             } else if (line.startsWith(PRESET_FILEPATH_INI_FIELD)) {
                 presetsFilePath = line.substring(line.indexOf("=") + 1);
             }
@@ -106,10 +108,15 @@ public class ExtraEngPresetsConfig {
         return file;
     }
 
-    private static int parseServerPort(String fullServerAddressStr) throws NumberFormatException {
+    private static int parseServerPort(String fullServerAddressStr, int lineNum) throws NumberFormatException {
         int colonPos = fullServerAddressStr.indexOf(':');
         if (colonPos > 0) {
-            return Integer.parseInt(fullServerAddressStr.substring(colonPos + 1));
+            try {
+                return Integer.parseInt(fullServerAddressStr.substring(colonPos + 1));
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Error parsing server port at line number " + lineNum
+                        + ": '" + fullServerAddressStr + "'\nError parsing server port: " + e.getMessage());
+            }
         } else {
             return Artemis.DEFAULT_PORT;
         }
@@ -124,12 +131,11 @@ public class ExtraEngPresetsConfig {
         }
     }
 
-    private static byte parseShipIndex(String shipNumStr) throws NumberFormatException {
+    private static byte parseShipIndex(String shipNumStr, int lineNum) throws NumberFormatException {
         byte shipIndex = (byte)(Integer.parseInt(shipNumStr) - 1);
         if (!(0 <= shipIndex && shipIndex <= 7)) {
-            throw new NumberFormatException(
-                    "Ship number must be between 1 and 8 (inclusive). It was: "
-                            + shipNumStr);
+            throw new NumberFormatException("Error parsing ship number at line number " + lineNum
+                    + ": '" + shipNumStr + "'\nShip number must be between 1 and 8 (inclusive).");
         }
         return shipIndex;
     }
