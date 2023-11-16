@@ -37,16 +37,19 @@ public class ExtraEngPresetsClient {
             new Scanner(System.in).nextLine();
             return;
         }
+        System.out.println("Successfully obtained " + config.getPresets().getNumberOfPresets()
+            + " preset documents from " + config.getPresetsFilePath());
 
         // Start the client
         ExtraEngPresetsClient client = null;
         boolean connectionSucceeded = true;
         while (connectionSucceeded) {
             try {
+                System.out.println("Connecting with access code " + config.getFullServerAddress() + " ...");
                 client = new ExtraEngPresetsClient(config);
                 connectionSucceeded = false;
             } catch (ConnectException e) {
-                System.out.println("Connection failed, retrying.");
+                System.out.println("Connection failed. Retrying.");
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException ex) {
@@ -59,8 +62,10 @@ public class ExtraEngPresetsClient {
                 return;
             }
         }
+        System.out.println("Access codes accepted. Our agents have boarded ship "
+                + (config.getShipNumber())
+                + " undetected and are awaiting your command.");
 
-        // Listen to command line
         client.listenToConsoleInput();
     }
 
@@ -69,18 +74,12 @@ public class ExtraEngPresetsClient {
 
     public ExtraEngPresetsClient(ExtraEngPresetsConfig config) throws IOException {
         this.config = config;
-        //System.out.println("Preset documents successfully obtained from " + presetsFilePath);
-
-        System.out.println("Connecting to " + config.getFullServerAddress() + "...");
 
         server = new ThreadedArtemisNetworkInterface(config.getServerIpAddress(),
                 config.getServerPort());
         server.addListener(this);
         server.start();
-        System.out.println("Connected!");
         server.send(new SetShipPacket(config.getShipIndex()));
-        System.out.println("Our agents have boarded ship " + (config.getShipNumber())
-                + " undetected and are awaiting your command.");
     }
 
     public void listenToConsoleInput() {
@@ -93,7 +92,7 @@ public class ExtraEngPresetsClient {
                     applyPreset(inputLine);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

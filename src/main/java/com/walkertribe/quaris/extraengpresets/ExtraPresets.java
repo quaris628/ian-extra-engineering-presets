@@ -100,6 +100,10 @@ public class ExtraPresets
         return presetsLowPowerSystems.get(key);
     }
 
+    public int getNumberOfPresets() {
+        return presets.size();
+    }
+
     /**
      * Parses power and coolant from a line in the presets file
      * @param line single line in the presets file

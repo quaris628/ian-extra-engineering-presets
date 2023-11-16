@@ -23,6 +23,7 @@ public class ExtraEngPresetsConfig {
     private String serverIpAddress;
     private int serverPort;
     private byte shipIndex;
+    private String presetsFilePath;
     private ExtraPresets presets;
     // isEasternFront is only relevant for autohotkey
 
@@ -41,7 +42,7 @@ public class ExtraEngPresetsConfig {
         this.serverIpAddress = DEFAULT_SERVER_IP_ADDRESS;
         this.serverPort = Artemis.DEFAULT_PORT;
         this.shipIndex = DEFAULT_SHIP_INDEX;
-        String presetsFilePath = DEFAULT_PRESETS_FILEPATH;
+        this.presetsFilePath = DEFAULT_PRESETS_FILEPATH;
 
         int lineNum = -1;
         while (iniSc.hasNextLine()) {
@@ -56,7 +57,7 @@ public class ExtraEngPresetsConfig {
                 String shipNumStr = line.substring(line.indexOf("=") + 1);
                 this.shipIndex = parseShipIndex(shipNumStr, lineNum);
             } else if (line.startsWith(PRESET_FILEPATH_INI_FIELD)) {
-                presetsFilePath = line.substring(line.indexOf("=") + 1);
+                this.presetsFilePath = line.substring(line.indexOf("=") + 1);
             }
         }
 
@@ -163,6 +164,11 @@ public class ExtraEngPresetsConfig {
     public byte getShipNumber() {
         return (byte) (shipIndex + 1);
     }
+
+    public String getPresetsFilePath() {
+        return presetsFilePath;
+    }
+
     public ExtraPresets getPresets() {
         // be mindful of keeping input delay low here
         return presets;
