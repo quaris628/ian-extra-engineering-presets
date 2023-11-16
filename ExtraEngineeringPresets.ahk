@@ -56,8 +56,7 @@ while (i < presetFileLines.Length) {
 ; Applies a preset by typing its key into IAN's command line
 ; ----------------------------------------------------------------
 applyPreset(key) {
-	ControlSendText(key, , "ahk_pid " ianPid)
-	ControlSend("{Enter}", , "ahk_pid " ianPid)
+	ControlSendText(key "`n", , "ahk_pid " ianPid)
 }
 
 ; ----------------------------------------------------------------
