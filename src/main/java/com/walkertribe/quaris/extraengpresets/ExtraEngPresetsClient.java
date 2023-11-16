@@ -86,9 +86,15 @@ public class ExtraEngPresetsClient {
     public void listenToConsoleInput() {
         Scanner sc = new Scanner(System.in);
         while (true) {
-            // be mindful of keeping input delay low here
-            String inputLine = sc.nextLine();
-            applyPreset(inputLine);
+            try {
+                while (true) {
+                    // be mindful of keeping input delay low here
+                    String inputLine = sc.nextLine();
+                    applyPreset(inputLine);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
