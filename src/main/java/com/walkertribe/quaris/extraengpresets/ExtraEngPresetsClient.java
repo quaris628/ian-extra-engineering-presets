@@ -69,11 +69,16 @@ public class ExtraEngPresetsClient {
         client.listenToConsoleInput();
     }
 
-    private ArtemisNetworkInterface server;
-    private ExtraEngPresetsConfig config;
+    private final static String LOG_COMMAND = "LOG";
+
+    private final ArtemisNetworkInterface server;
+    private final ExtraEngPresetsConfig config;
+    private final PresetKeylogger logger;
+
 
     public ExtraEngPresetsClient(ExtraEngPresetsConfig config) throws IOException {
         this.config = config;
+        this.logger = new PresetKeylogger(config);
 
         server = new ThreadedArtemisNetworkInterface(config.getServerIpAddress(),
                 config.getServerPort());
@@ -85,14 +90,25 @@ public class ExtraEngPresetsClient {
     public void listenToConsoleInput() {
         Scanner sc = new Scanner(System.in);
         while (true) {
+            String inputLine = "";
             try {
                 while (true) {
                     // be mindful of keeping input delay low here
-                    String inputLine = sc.nextLine();
+                    inputLine = sc.nextLine();
                     applyPreset(inputLine);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                if (inputLine.equalsIgnoreCase(LOG_COMMAND)) {
+                    try {
+                        logger.writeLog();
+                        System.out.println("Log successful");
+                    } catch (IOException ex) {
+                        System.out.println("Log failed");
+                        ex.printStackTrace();
+                    }
+                } else {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -118,6 +134,8 @@ public class ExtraEngPresetsClient {
         for (EngSysSetting setting : lowPowerSystems) {
             setCoolant(setting);
         }
+
+        logger.log(key);
     }
 
     private void setPower(EngSysSetting setting) {

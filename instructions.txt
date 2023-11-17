@@ -2,28 +2,13 @@
            Instructions for Extra Engineering Presets           
 ----------------------------------------------------------------
 
-ABOUT:
- This tool allows you to have more than 10 engineering presets.
- It uses autohotkey to detect keypresses, and sets power
- and coolant levels via an independent network connection
- to the game server.
+-------------------------- HOW TO... ---------------------------
 
- The keybinds will only trigger when you have an artemis
- window focused and have the engineering console active!
- For example, if you keep engineering claimed while you go on
- a shuttle expedition, your presets won't trigger from your
- keypresses you're using to pilot the shuttle.
- https://clips.twitch.tv/SassySpicyHeronItsBoshyTime-Rx3bdHeN_Vef3Vzp
-
- You'll need java runtime installed.
- (At least version 8, I think. I'm not entirely sure.)
-
-
-TO CONFIGURE PRESETS:
+CONFIGURE PRESETS:
  Edit presets.txt.
  You can change which file is used for presets in config.ini.
 
-TO START:
+START:
  1. Ensure your settings (like server IP address)
     are set in config.ini
  2. Run "ExtraEngineeringPresets.exe".
@@ -34,21 +19,64 @@ TO START:
 
  If the server crashes, you'll have to restart this tool.
 
-TO RESTART:
+RESTART:
  1. Close the command line window
  2. Run "ExtraEngineeringPresets.exe" again
 
-TO STOP:
+STOP:
  1. Close the command line window
  2. Press any preset keybind
     OR Hit Ctrl+Esc
     OR Right-click the green-H tray icon, and select Exit
 
+---------------------- LOGGING STATISTICS ----------------------
+Optionally, you can generate a log file with data on how many
+ times you used each preset and how long each preset was active
+ (before another preset was triggered). This only logs presets
+ used since this tool was started/restarted.
+To generate, type "LOG" into the console and hit enter.
+The file will be saved to a /logs/ folder inside the tool's
+ main directory.
 
-If you have questions, find bugs, etc, go to Quaris.
+----------------------- ABOUT/MISC -----------------------------
 
+ You'll need java runtime installed.
+ (At least version 8, I think. I'm not entirely sure.)
 
-Massive credit to the Interface for Artemis Networking (IAN)
-project and everyone who has reverse-engineered Artemis's
-network packets structure. Without this prior work this tool
-would not be possible.
+ The keybinds will only trigger when you have an artemis
+   window focused AND have the engineering console active.
+ Mistake that caused me to make this guardrail:
+ https://clips.twitch.tv/SassySpicyHeronItsBoshyTime-Rx3bdHeN_Vef3Vzp
+
+ Detecting if the engineering console is selected is done by
+   testing pixel colors at the center of the first 4 "bulb"s
+   on each console tab, and then testing pixel colors on the
+   E in the ENGINR word.
+ Since the eastern front mod uses orange colors instead of blue,
+  different color checks are needed for it. This is the reason
+  for the isEasternFront setting in config.ini.
+
+ This tool is composed of two programs that run simultaneously.
+ Keypress detection is done with an AutoHotKey script.
+ Setting the power and coolant is done with a java program
+   that communicates directly with the game server.
+   (Forked from IAN: https://github.com/rjwut/ian)
+ The tray icon is the AutoHotKey script.
+ The console window is the java program.
+ AutoHotKey sends keystrokes to the java program by typing
+   their codes into the java program's console. Luckily,
+   it can do this without shifting window focus.
+ ExtraEngineeringPresets.exe is the AutoHotKey script, and
+   when it starts, it starts the java program automatically.
+   The java program technically can run alone, but AutoHotKey
+   only sends keystrokes to the java program that it starts.
+
+----------------------------------------------------------------
+
+If you have questions, find bugs, etc, go to Quaris, the author.
+
+Without this prior work this tool would not be possible:
+- Everyone who has reverse-engineered Artemis's network packets
+    https://artemis-nerds.github.io/protocol-docs/
+- The Interface for Artemis Networking (IAN) java source code
+    https://github.com/rjwut/ian

@@ -16,6 +16,7 @@ public class ExtraPresets
     private HashMap<String, EngSysSetting[]> presets;
     private HashMap<String, EngSysSetting[]> presetsHighPowerSystems;
     private HashMap<String, EngSysSetting[]> presetsLowPowerSystems;
+    private String[] sortedKeys;
 
     /**
      * Creates extra presets object by loading keybinds and settings from a file
@@ -65,6 +66,12 @@ public class ExtraPresets
             presetsHighPowerSystems.put(key, manualToArray(highPowerSettings));
             presetsLowPowerSystems.put(key, manualToArray(lowPowerSettings));
         }
+        sortedKeys = new String[presets.size()];
+        int i = 0;
+        for (String key : presets.keySet()) {
+            sortedKeys[i++] = key;
+        }
+        Arrays.sort(sortedKeys);
     }
 
     /**
@@ -102,6 +109,13 @@ public class ExtraPresets
 
     public int getNumberOfPresets() {
         return presets.size();
+    }
+
+    /**
+     * Get keys, sorted
+     */
+    public String[] getKeys() {
+        return sortedKeys;
     }
 
     /**
