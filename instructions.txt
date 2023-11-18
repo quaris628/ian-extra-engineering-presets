@@ -31,12 +31,19 @@ STOP:
 
 ---------------------- LOGGING STATISTICS ----------------------
 Optionally, you can generate a log file with data on how many
- times you used each preset and how long each preset was active
- (before another preset was triggered). This only logs presets
- used since this tool was started/restarted.
-To generate, type "LOG" into the console and hit enter.
-The file will be saved to a /logs/ folder inside the tool's
- main directory.
+  times you used each preset and how long each preset was active
+  (before another preset was triggered).
+
+To generate a log file:
+  Type "LOG" into the console and hit enter.
+  The file will be saved to the /logs/ folder.
+
+Remarks:
+  All presets since starting/restarting are logged.
+  (Generating a log file doesn't reset what data is included.)
+  If the same preset key is pressed multiple times in a row
+    within a half second, then only one preset use is logged.
+    (The preset is still applied multiple times though.)
 
 ----------------------- ABOUT/MISC -----------------------------
 

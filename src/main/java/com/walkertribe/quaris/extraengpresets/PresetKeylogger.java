@@ -34,6 +34,13 @@ public class PresetKeylogger {
         long currentTime = System.currentTimeMillis();
         if (this.prevPresetKey != null) {
             long prevPresetTimeElapsed = currentTime - this.prevPresetAppliedTimestamp;
+
+            // if pressing the same key within a half second,
+            // then don't log this as a separate keystroke
+            if (this.prevPresetKey.equals(key) && prevPresetTimeElapsed <= 500) {
+                return;
+            }
+
             this.presetDurationActive.put(this.prevPresetKey,
                     this.presetDurationActive.get(this.prevPresetKey) + prevPresetTimeElapsed);
         }
