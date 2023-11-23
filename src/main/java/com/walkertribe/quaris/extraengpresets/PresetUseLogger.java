@@ -3,11 +3,10 @@ package com.walkertribe.quaris.extraengpresets;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class PresetKeylogger {
+public class PresetUseLogger {
 
     private final ExtraEngPresetsConfig config;
     private final HashMap<String, Integer> presetUseCount;
@@ -15,7 +14,7 @@ public class PresetKeylogger {
     private String prevPresetKey;
     private long  prevPresetAppliedTimestamp;
 
-    public PresetKeylogger(ExtraEngPresetsConfig config) {
+    public PresetUseLogger(ExtraEngPresetsConfig config) {
         this.config = config;
         this.presetUseCount = new HashMap<String, Integer>();
         this.presetDurationActive = new HashMap<String, Long>();
@@ -36,16 +35,15 @@ public class PresetKeylogger {
             long prevPresetTimeElapsed = currentTime - this.prevPresetAppliedTimestamp;
 
             // if pressing the same key within a half second,
-            // then don't log this as a separate keystroke
+            // don't log this as a separate keystroke
             if (this.prevPresetKey.equals(key) && prevPresetTimeElapsed <= 500) {
                 return;
             }
 
-            this.presetDurationActive.put(this.prevPresetKey,
-                    this.presetDurationActive.get(this.prevPresetKey) + prevPresetTimeElapsed);
+            presetUseCount.put(prevPresetKey, presetUseCount.get(prevPresetKey) + 1);
+            presetDurationActive.put(prevPresetKey,
+                    presetDurationActive.get(prevPresetKey) + prevPresetTimeElapsed);
         }
-
-        this.presetUseCount.put(key, this.presetUseCount.get(key) + 1);
 
         this.prevPresetKey = key;
         this.prevPresetAppliedTimestamp = currentTime;

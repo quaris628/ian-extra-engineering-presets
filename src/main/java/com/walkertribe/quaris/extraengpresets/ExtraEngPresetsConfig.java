@@ -35,48 +35,32 @@ public class ExtraEngPresetsConfig {
      *    auto-creation and/or open-for-editing was attempted and fails
      * @throws NumberFormatException when file's number format is invalid
      */
-    public ExtraEngPresetsConfig()
-            throws IOException, FileNotFoundException, IllegalArgumentException {
-        Scanner iniSc = new Scanner(validateFilepath(CONFIG_FILEPATH, false));
-
-        this.serverIpAddress = DEFAULT_SERVER_IP_ADDRESS;
-        this.serverPort = Artemis.DEFAULT_PORT;
-        this.shipIndex = DEFAULT_SHIP_INDEX;
-        this.presetsFilePath = DEFAULT_PRESETS_FILEPATH;
-
-        int lineNum = -1;
-        while (iniSc.hasNextLine()) {
-            String line = iniSc.nextLine();
-            lineNum++;
-
-            if (line.startsWith(SERVER_ADDRESS_INI_FIELD)) {
-                String fullServerAddressStr = line.substring(line.indexOf("=") + 1);
-                this.serverIpAddress = parseServerIpAddress(fullServerAddressStr);
-                this.serverPort = parseServerPort(fullServerAddressStr, lineNum);
-            } else if (line.startsWith(SHIP_NUM_INI_FIELD)) {
-                String shipNumStr = line.substring(line.indexOf("=") + 1);
-                this.shipIndex = parseShipIndex(shipNumStr, lineNum);
-            } else if (line.startsWith(PRESET_FILEPATH_INI_FIELD)) {
-                this.presetsFilePath = line.substring(line.indexOf("=") + 1);
-            }
-        }
-
-        this.presets = new ExtraPresets(validateFilepath(presetsFilePath, true));
+    private ExtraEngPresetsConfig(String serverIpAddress, int serverPort,
+                                  byte shipIndex, String presetsFilePath,
+                                  ExtraPresets presets) {
+        this.serverIpAddress = serverIpAddress;
+        this.serverPort = serverPort;
+        this.shipIndex = shipIndex;
+        this.presetsFilePath = presetsFilePath;
+        this.presets = presets;
     }
 
     /**
      * Validates a filepath is valid to read from.
-     * If the file isn't found, asks the user if they want the file created for them
-     *   and opened for editing (and then does that if the user answered yes).
+     * If the file isn't found, asks the user if they want the file
+     *   created for them and opened for editing (and then does that
+     *   if the user answered yes).
      * @param filepath of the file to open
-     * @param isPresetFile true if validating preset file; false if validating config.ini
+     * @param isPresetFile true if validating preset file;
+     *                     false if validating config.ini
      * @return Scanner object reading from the file
      * @throws FileNotFoundException when file wasn't initially found
      *   (even if it was successfully created and opened for editing)
-     * @throws IOException when file's auto-creation and/or open-for-editing
-     *   was attempted and fails
+     * @throws IOException when file's auto-creation and/or
+     *   open-for-editing was attempted and fails
      */
-    private static File validateFilepath(String filepath, boolean isPresetFile) throws IOException, FileNotFoundException {
+    private static File validateFilepath(String filepath, boolean isPresetFile)
+            throws IOException, FileNotFoundException {
         File file = new File(filepath);
 
         if (file.isDirectory()) {
@@ -88,35 +72,48 @@ public class ExtraEngPresetsConfig {
 
         if (!file.isFile()) {
             if (isPresetFile) {
-                System.out.println("This file does not exist: " + file.getAbsolutePath()
-                        + "\nDo you want to create it and open it for editing? (Y/N) ");
+                System.out.println("This file does not exist: "
+                        + file.getAbsolutePath()
+                        + "\nDo you want to create it and open it for " +
+                        "editing? (Y/N) ");
                 if (new Scanner(System.in).next().equalsIgnoreCase("Y")) {
                     if (!file.createNewFile()) {
-                        throw new IOException("Could not create presets file. Reason unknown.");
+                        throw new IOException(
+                                "Could not create presets file." +
+                                " Reason unknown.");
                     }
-                    FileWriter fileWriter = new FileWriter(file.getAbsolutePath());
+                    FileWriter fileWriter = new FileWriter(
+                            file.getAbsolutePath());
                     fileWriter.write(generateNewPresetsTxt());
                     fileWriter.close();
-                    System.out.println("Generated file " + file.getAbsolutePath());
-                    new ProcessBuilder("Notepad.exe", file.getAbsolutePath()).start();
+                    System.out.println("Generated file "
+                            + file.getAbsolutePath());
+                    new ProcessBuilder("Notepad.exe",
+                            file.getAbsolutePath()).start();
                     System.out.println("Opened file for editing in Notepad");
                 }
                 throw new FileNotReadyException();
             }
-            throw new FileNotFoundException("This file does not exist: " + file.getAbsolutePath());
+            throw new FileNotFoundException("This file does not exist: "
+                    + file.getAbsolutePath());
         }
 
         return file;
     }
 
-    private static int parseServerPort(String fullServerAddressStr, int lineNum) throws NumberFormatException {
+    private static int parseServerPort(String fullServerAddressStr, int lineNum)
+            throws NumberFormatException {
         int colonPos = fullServerAddressStr.indexOf(':');
         if (colonPos > 0) {
             try {
-                return Integer.parseInt(fullServerAddressStr.substring(colonPos + 1));
+                return Integer.parseInt(
+                        fullServerAddressStr.substring(colonPos + 1));
             } catch (NumberFormatException e) {
-                throw new NumberFormatException("Error parsing server port at line number " + lineNum
-                        + ": '" + fullServerAddressStr + "'\nError parsing server port: " + e.getMessage());
+                throw new NumberFormatException(
+                        "Error parsing server port at line number "
+                                + lineNum + ": '" + fullServerAddressStr
+                                + "'\nError parsing server port: "
+                                + e.getMessage());
             }
         } else {
             return Artemis.DEFAULT_PORT;
@@ -132,11 +129,15 @@ public class ExtraEngPresetsConfig {
         }
     }
 
-    private static byte parseShipIndex(String shipNumStr, int lineNum) throws NumberFormatException {
+    private static byte parseShipIndex(String shipNumStr, int lineNum)
+            throws NumberFormatException {
         byte shipIndex = (byte)(Integer.parseInt(shipNumStr) - 1);
         if (!(0 <= shipIndex && shipIndex <= 7)) {
-            throw new NumberFormatException("Error parsing ship number at line number " + lineNum
-                    + ": '" + shipNumStr + "'\nShip number must be between 1 and 8 (inclusive).");
+            throw new NumberFormatException(
+                    "Error parsing ship number at line number "
+                            + lineNum + ": '" + shipNumStr
+                            + "'\nShip number must be between 1 and 8 " +
+                            "(inclusive).");
         }
         return shipIndex;
     }
@@ -172,6 +173,58 @@ public class ExtraEngPresetsConfig {
     public ExtraPresets getPresets() {
         // be mindful of keeping input delay low here
         return presets;
+    }
+
+    /**
+     * Creates a config object by reading from the CONFIG_FILEPATH file.
+     * @throws FileNotFoundException when file wasn't initially found
+     *    (even if it was successfully created and opened for editing)
+     * @throws IOException when file format is invalid, or when file's
+     *    auto-creation and/or open-for-editing was attempted and fails
+     * @throws NumberFormatException when file's number format is invalid
+     */
+    public static ExtraEngPresetsConfig FromFile()
+            throws IOException, FileNotFoundException, IllegalArgumentException {
+        return FromFile(CONFIG_FILEPATH);
+    }
+
+    /**
+     * Creates a config object by reading from the specified file.
+     * @throws FileNotFoundException when file wasn't initially found
+     *    (even if it was successfully created and opened for editing)
+     * @throws IOException when file format is invalid, or when file's
+     *    auto-creation and/or open-for-editing was attempted and fails
+     * @throws NumberFormatException when file's number format is invalid
+     */
+    public static ExtraEngPresetsConfig FromFile(String filepath)
+            throws IOException, FileNotFoundException, IllegalArgumentException {
+        Scanner iniSc = new Scanner(validateFilepath(CONFIG_FILEPATH, false));
+
+        String serverIpAddress = DEFAULT_SERVER_IP_ADDRESS;
+        int serverPort = Artemis.DEFAULT_PORT;
+        byte shipIndex = DEFAULT_SHIP_INDEX;
+        String presetsFilePath = DEFAULT_PRESETS_FILEPATH;
+
+        int lineNum = -1;
+        while (iniSc.hasNextLine()) {
+            String line = iniSc.nextLine();
+            lineNum++;
+
+            if (line.startsWith(SERVER_ADDRESS_INI_FIELD)) {
+                String fullServerAddressStr = line.substring(line.indexOf("=") + 1);
+                serverIpAddress = parseServerIpAddress(fullServerAddressStr);
+                serverPort = parseServerPort(fullServerAddressStr, lineNum);
+            } else if (line.startsWith(SHIP_NUM_INI_FIELD)) {
+                String shipNumStr = line.substring(line.indexOf("=") + 1);
+                shipIndex = parseShipIndex(shipNumStr, lineNum);
+            } else if (line.startsWith(PRESET_FILEPATH_INI_FIELD)) {
+                presetsFilePath = line.substring(line.indexOf("=") + 1);
+            }
+        }
+
+        ExtraPresets presets = new ExtraPresets(validateFilepath(presetsFilePath, true));
+
+        return new ExtraEngPresetsConfig(serverIpAddress, serverPort, shipIndex, presetsFilePath, presets);
     }
 
     private static String generateNewPresetsTxt() {
