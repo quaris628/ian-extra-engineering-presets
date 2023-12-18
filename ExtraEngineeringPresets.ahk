@@ -11,6 +11,7 @@ SendMode "Input"
 Run A_ComSpec " /c java -jar ian.jar",,,&ianPid
 
 isEasternFront := IniRead("config.ini", "Misc", "isEasternFront", "0")
+windowFocusRequirement := IniRead("config.ini", "Misc", "windowFocusRequirement", "0")
 presetFilePath := IniRead("config.ini", "Presets", "presetFile", "presets.txt")
 
 ; EF uses different reddish colors
@@ -60,15 +61,21 @@ applyPreset(key) {
 }
 
 ; ----------------------------------------------------------------
-; If there is no IAN console window, returns false.
-; If an engineering artemis window isn't focused, returns false.
-; Otherwise, returns true.
+; Checks if presets should be triggered by keypresses.
+; If there is no IAN console window, exits the app.
 ; ----------------------------------------------------------------
 isOkToInterceptKeypress() {
 	if (!WinExist("ahk_pid " ianPid)) {
 		ExitApp
 	}
-	return checkIfFocusedOnEngWin() > 0
+	
+	if (windowFocusRequirement = 0) {
+		return true
+	} else if (windowFocusRequirement = 1) {
+		return WinActive("Game Window") > 0
+	} else if (windowFocusRequirement = 2) {
+		return checkIfFocusedOnEngWin() > 0
+	}
 }
 
 ; ----------------------------------------------------------------
