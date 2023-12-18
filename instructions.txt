@@ -2,23 +2,24 @@
            Instructions for Extra Engineering Presets           
 ----------------------------------------------------------------
 
+ This requires java runtime to work.
+ (At least version 8, I think. I haven't tested to verify.)
+
 -------------------------- HOW TO... ---------------------------
 
-CONFIGURE PRESETS:
- Edit presets.txt.
- You can change which file is used for presets in config.ini.
+CONFIGURE:
+ - Edit config.ini to change server IP and other misc settings.
+ - Edit presets.txt to change engineering presets.
+   Optionally, you can have multiple preset txt files,
+   and set which to load in config.ini.
 
 START:
- 1. Ensure your settings (like server IP address)
-    are set in config.ini
- 2. Run "ExtraEngineeringPresets.exe".
- A console window should open, and a green H icon should
- appear in your system tray.
- Look at the console window and verify that it has connected
- to the server and has boarded your intended ship number.
+ Run "ExtraEngineeringPresets.exe".
+ (Watch the console window, and verify it connects to the IP and
+    to the correct ship.)
 
- If the server crashes, you'll have to restart this tool.
-
+If the artemis server crashes, you'll have to restart.
+Restarting reloads all settings, including presets.
 RESTART:
  1. Close the command line window
  2. Run "ExtraEngineeringPresets.exe" again
@@ -29,7 +30,7 @@ STOP:
     OR Hit Ctrl+Esc
     OR Right-click the green-H tray icon, and select Exit
 
----------------------- LOGGING STATISTICS ----------------------
+------------------- LOGGING USAGE STATISTICS -------------------
 Optionally, you can generate a log file with data on how many
   times you used each preset and how long each preset was active
   (before another preset was triggered).
@@ -45,23 +46,7 @@ Remarks:
     within a half second, then only one preset use is logged.
     (The preset is still applied multiple times though.)
 
------------------------ ABOUT/MISC -----------------------------
-
- You'll need java runtime installed.
- (At least version 8, I think. I'm not entirely sure.)
-
- The keybinds will only trigger when you have an artemis
-   window focused AND have the engineering console active.
- Mistake that caused me to make this guardrail:
- https://clips.twitch.tv/SassySpicyHeronItsBoshyTime-Rx3bdHeN_Vef3Vzp
-
- Detecting if the engineering console is selected is done by
-   testing pixel colors at the center of the first 4 "bulb"s
-   on each console tab, and then testing pixel colors on the
-   E in the ENGINR word.
- Since the eastern front mod uses orange colors instead of blue,
-  different color checks are needed for it. This is the reason
-  for the isEasternFront setting in config.ini.
+--------------------- HOW IT WORKS ---------------------------
 
  This tool is composed of two programs that run simultaneously.
  Keypress detection is done with an AutoHotKey script.
@@ -78,12 +63,26 @@ Remarks:
    The java program technically can run alone, but AutoHotKey
    only sends keystrokes to the java program that it starts.
 
+ By default, the keybinds will only trigger presets when you
+   have an artemis window focused AND have the engineering
+   console active.
+ Why this guardrail exists:
+ https://clips.twitch.tv/SassySpicyHeronItsBoshyTime-Rx3bdHeN_Vef3Vzp
+ Detecting if the engineering console is selected is done by
+   testing pixel colors at the center of the first 4 "bulb"s
+   on each console tab, and then testing pixel colors on the
+   E in the ENGINR word.
+ Since the eastern front mod uses orange colors instead of blue,
+  different color checks are needed for it. This is the reason
+  for the isEasternFront setting in config.ini.
+
 ----------------------------------------------------------------
 
 If you have questions, find bugs, etc, go to Quaris, the author.
 
-Without this prior work this tool would not be possible:
+Credits to this prior work, without which this tool would not
+  be possible:
+- The Interface for Artemis Networking (IAN) project
+    https://github.com/rjwut/ian
 - Everyone who has reverse-engineered Artemis's network packets
     https://artemis-nerds.github.io/protocol-docs/
-- The Interface for Artemis Networking (IAN) java source code
-    https://github.com/rjwut/ian
